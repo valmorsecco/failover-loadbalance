@@ -1,0 +1,54 @@
+version: "3"
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: failover-loadbalance-nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./public:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - public
+      - public2
+      - public3
+      - public4
+    networks:
+      - code-network
+
+  public:
+    build: ./public
+    container_name: failover-loadbalance-public
+    volumes:
+      - ./public/pages/public:/var/www/html
+    networks:
+      - code-network
+
+  public2:
+    build: ./public
+    container_name: failover-loadbalance-public2
+    volumes:
+      - ./public/pages/public_2:/var/www/html
+    networks:
+      - code-network
+
+  public3:
+    build: ./public
+    container_name: failover-loadbalance-public3
+    volumes:
+      - ./public/pages/public_3:/var/www/html
+    networks:
+      - code-network
+
+  public4:
+    build: ./public
+    container_name: failover-loadbalance-public4
+    volumes:
+      - ./public/pages/public_4:/var/www/html
+    networks:
+      - code-network
+
+networks:
+  code-network:
+    driver: bridge
